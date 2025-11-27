@@ -41,6 +41,82 @@ async function renderHome(content) {
   }
 }
 
+// Функция рендера создания вайба
+function renderCreate(content) {
+  content.innerHTML = `
+    <div class="card">
+      <textarea class="input" id="vibeText" placeholder="Какой у тебя вайб?"></textarea>
+      <div id="emoji-picker-container"></div>
+      <button class="btn" onclick="publishVibe()">Опубликовать</button>
+    </div>
+  `;
+
+  // Инициализируем пикер эмодзи
+  setTimeout(() => {
+    initEmojiPicker('emoji-picker-container', (emoji) => {
+      console.log('Выбрано эмодзи:', emoji);
+    });
+  }, 100);
+}
+
+// Публикация вайба
+async function publishVibe() {
+  if (!currentUser) {
+    alert('Войдите чтобы публиковать вайбы');
+    showAuth();
+    return;
+  }
+
+  if (!supabase) {
+    alert('Приложение не инициализировано');
+    return;
+  }
+
+  const textElement = document.getElementById("vibeText");
+  
+  if (!textElement) {
+    console.error('Form elements not found');
+    return;
+  }
+
+  const text = textElement.value.trim();
+  const emoji = getSelectedEmoji();
+
+  if (!text) {
+    alert("Напишите текст вайба");
+    return;
+  }
+
+  try {
+    const { error } = await supabase
+      .from('vibes')
+      .insert([
+        {
+          user_id: currentUser.id,
+          username: currentUser.user_metadata?.username || currentUser.email.split('@')[0],
+          text: text,
+          emoji: emoji
+        }
+      ]);
+
+    if (error) throw error;
+
+    // Очищаем форму
+    textElement.value = '';
+    setSelectedEmoji('✨'); // Сбрасываем на эмодзи по умолчанию
+    
+    // Переходим на ленту
+    setTab("home");
+    
+  } catch (error) {
+    console.error('Ошибка публикации:', error);
+    alert('Ошибка публикации: ' + error.message);
+  }
+}
+
+// Остальные функции остаются без изменений
+// ... (loadVibesFromSupabase, formatDate и другие)
+
 // Загрузка вайбов из Supabase
 async function loadVibesFromSupabase() {
   try {
