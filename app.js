@@ -1,4 +1,3 @@
-
 const SUPABASE_URL = 'https://fureiffcxnqgoiejukmm.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ1cmVpZmZjeG5xZ29pZWp1a21tIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQyNjExNzgsImV4cCI6MjA3OTgzNzE3OH0.nT_mulmlukW3twj7-nmoILWQ8_AvbRpidhsWO5FpSHY';
 
@@ -6,7 +5,6 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 let supabase;
 let currentUser = null;
 
-я
 document.addEventListener('DOMContentLoaded', function() {
   initializeApp();
 });
