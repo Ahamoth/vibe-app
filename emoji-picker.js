@@ -1,4 +1,3 @@
-// Система выбора эмодзи
 class EmojiPicker {
   constructor(containerId, onEmojiSelect) {
     this.container = document.getElementById(containerId);
@@ -58,18 +57,18 @@ class EmojiPicker {
     const categories = this.container.querySelectorAll('.emoji-category');
     const emojiGrid = this.container.querySelector('#emoji-grid');
 
-    // Открытие/закрытие пикера
+
     trigger.addEventListener('click', (e) => {
       e.stopPropagation();
       picker.classList.toggle('active');
     });
 
-    // Закрытие пикера при клике вне его
+
     document.addEventListener('click', () => {
       picker.classList.remove('active');
     });
 
-    // Поиск эмодзи
+
     search.addEventListener('input', (e) => {
       const query = e.target.value.toLowerCase();
       if (query.length > 0) {
@@ -82,7 +81,7 @@ class EmojiPicker {
       }
     });
 
-    // Смена категории
+
     categories.forEach(btn => {
       btn.addEventListener('click', () => {
         categories.forEach(b => b.classList.remove('active'));
@@ -91,7 +90,7 @@ class EmojiPicker {
       });
     });
 
-    // Выбор эмодзи
+
     emojiGrid.addEventListener('click', (e) => {
       if (e.target.classList.contains('emoji-item')) {
         this.selectEmoji(e.target.dataset.emoji);
@@ -99,7 +98,7 @@ class EmojiPicker {
       }
     });
 
-    // Активируем первую категорию
+
     if (categories[0]) {
       categories[0].classList.add('active');
     }
@@ -146,7 +145,7 @@ class EmojiPicker {
   }
 }
 
-// Глобальная функция для инициализации пикера
+
 let emojiPickerInstance = null;
 
 function initEmojiPicker(containerId, onEmojiSelect) {
