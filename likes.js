@@ -8,22 +8,26 @@ async function toggleLike(vibeId) {
 
   try {
     // Проверяем, лайкал ли уже пользователь
-    const { data: existingLike } = await supabase
+    const { data: existingLike, error: checkError } = await supabase
       .from('likes')
       .select('id')
       .eq('vibe_id', vibeId)
       .eq('user_id', currentUser.id)
-      .single();
+      .maybeSingle(); // Используем maybeSingle вместо single
+
+    if (checkError) throw checkError;
 
     if (existingLike) {
       // Удаляем лайк
-      await supabase
+      const { error: deleteError } = await supabase
         .from('likes')
         .delete()
         .eq('id', existingLike.id);
+
+      if (deleteError) throw deleteError;
     } else {
       // Добавляем лайк
-      await supabase
+      const { error: insertError } = await supabase
         .from('likes')
         .insert([
           {
@@ -31,56 +35,80 @@ async function toggleLike(vibeId) {
             user_id: currentUser.id
           }
         ]);
+
+      if (insertError) throw insertError;
     }
 
     // Обновляем отображение
-    refreshVibeLikes(vibeId);
+    await refreshVibeLikes(vibeId);
   } catch (error) {
     console.error('Ошибка при лайке:', error);
+    alert('Ошибка при установке лайка');
   }
 }
 
 async function refreshVibeLikes(vibeId) {
-  // Получаем обновленное количество лайков
-  const { count } = await supabase
-    .from('likes')
-    .select('*', { count: 'exact', head: true })
-    .eq('vibe_id', vibeId);
+  try {
+    // Получаем обновленное количество лайков
+    const { count, error: countError } = await supabase
+      .from('likes')
+      .select('*', { count: 'exact', head: true })
+      .eq('vibe_id', vibeId);
 
-  // Получаем лайк текущего пользователя
-  const { data: userLike } = await supabase
-    .from('likes')
-    .select('id')
-    .eq('vibe_id', vibeId)
-    .eq('user_id', currentUser.id)
-    .single();
+    if (countError) throw countError;
 
-  // Обновляем кнопку лайка
-  const likeBtn = document.querySelector(`[onclick="toggleLike('${vibeId}')"]`);
-  if (likeBtn) {
-    likeBtn.innerHTML = userLike ? `❤️ ${count}` : `🤍 ${count}`;
-    likeBtn.classList.toggle('liked', userLike);
+    // Получаем лайк текущего пользователя
+    const { data: userLike, error: likeError } = await supabase
+      .from('likes')
+      .select('id')
+      .eq('vibe_id', vibeId)
+      .eq('user_id', currentUser.id)
+      .maybeSingle();
+
+    if (likeError) throw likeError;
+
+    // Обновляем кнопку лайка
+    const likeBtn = document.querySelector(`[onclick="toggleLike('${vibeId}')"]`);
+    if (likeBtn) {
+      const likeCount = count || 0;
+      likeBtn.innerHTML = userLike ? `❤️ ${likeCount}` : `🤍 ${likeCount}`;
+      likeBtn.classList.toggle('liked', userLike);
+    }
+  } catch (error) {
+    console.error('Ошибка обновления лайков:', error);
   }
 }
 
 async function getVibeLikesCount(vibeId) {
-  const { count } = await supabase
-    .from('likes')
-    .select('*', { count: 'exact', head: true })
-    .eq('vibe_id', vibeId);
-  
-  return count || 0;
+  try {
+    const { count, error } = await supabase
+      .from('likes')
+      .select('*', { count: 'exact', head: true })
+      .eq('vibe_id', vibeId);
+    
+    if (error) throw error;
+    return count || 0;
+  } catch (error) {
+    console.error('Ошибка получения количества лайков:', error);
+    return 0;
+  }
 }
 
 async function hasUserLiked(vibeId) {
   if (!currentUser) return false;
   
-  const { data } = await supabase
-    .from('likes')
-    .select('id')
-    .eq('vibe_id', vibeId)
-    .eq('user_id', currentUser.id)
-    .single();
-  
-  return !!data;
+  try {
+    const { data, error } = await supabase
+      .from('likes')
+      .select('id')
+      .eq('vibe_id', vibeId)
+      .eq('user_id', currentUser.id)
+      .maybeSingle();
+    
+    if (error) throw error;
+    return !!data;
+  } catch (error) {
+    console.error('Ошибка проверки лайка:', error);
+    return false;
+  }
 }
