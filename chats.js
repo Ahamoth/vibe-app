@@ -1,4 +1,4 @@
-// Система чатов
+
 let currentChat = null;
 let chatMessages = [];
 
@@ -26,7 +26,7 @@ function renderChats(content) {
 
 async function loadChats() {
   try {
-    // Получаем список пользователей для чатов
+
     const { data: users, error } = await supabase
       .from('vibes')
       .select('username, user_id')
@@ -148,7 +148,7 @@ function displayChatMessages() {
     </div>
   `).join('');
 
-  // Прокручиваем к последнему сообщению
+
   messagesContainer.scrollTop = messagesContainer.scrollHeight;
 }
 
@@ -212,8 +212,8 @@ function formatTime(dateString) {
   }
 }
 
-// Временная заглушка для реального времени
+
 function setupChatRealtime(otherUserId) {
   console.log('Realtime chat subscription would be set up for user:', otherUserId);
-  // Пока оставляем заглушку, можно добавить позже
+ 
 }
