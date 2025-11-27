@@ -6,7 +6,7 @@ async function checkAuth() {
       return;
     }
     
-   const { data: { user }, error } = await supabase.auth.getUser();
+    const { data: { user }, error } = await supabase.auth.getUser();
     
     if (error) {
       // AuthSessionMissingError - это нормально для неавторизованных пользователей
@@ -33,6 +33,7 @@ async function checkAuth() {
     showAuth();
   }
 }
+
 // Показать основное приложение
 function showApp() {
   const content = document.getElementById("content");
@@ -82,7 +83,8 @@ async function signUp() {
       document.getElementById('register-email').value = '';
       document.getElementById('register-password').value = '';
       document.getElementById('register-username').value = '';
-      showAuthTab(event, 'login');
+      // Переключаем на вкладку входа
+      showAuthTab('login');
     }
   } catch (error) {
     alert('Ошибка регистрации: ' + error.message);
