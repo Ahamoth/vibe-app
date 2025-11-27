@@ -3,6 +3,10 @@ async function renderHome(content) {
   content.innerHTML = '<div class="card">Загрузка вайбов...</div>';
   
   try {
+    if (!supabase) {
+      throw new Error('Supabase not initialized');
+    }
+    
     const vibes = await loadVibesFromSupabase();
     
     if (vibes.length === 0) {
@@ -48,6 +52,11 @@ async function publishVibe() {
   if (!currentUser) {
     alert('Войдите чтобы публиковать вайбы');
     showAuth();
+    return;
+  }
+
+  if (!supabase) {
+    alert('Приложение не инициализировано');
     return;
   }
 
