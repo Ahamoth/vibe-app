@@ -5,7 +5,7 @@ async function renderHome(content) {
   try {
     const vibes = await loadVibesFromSupabase();
     
-    if (vibes.length === 0) {
+    if (!vibes || vibes.length === 0) {
       content.innerHTML = '<div class="card">Пока нет вайбов. Нажми + чтобы создать первый!</div>';
       return;
     }
@@ -35,11 +35,6 @@ async function renderHome(content) {
 
     content.innerHTML = vibesHTML;
 
-    // Обновляем кнопки лайков
-    for (const vibe of vibes) {
-      await refreshVibeLikes(vibe.id);
-    }
-
   } catch (error) {
     console.error('Error loading vibes:', error);
     content.innerHTML = '<div class="card">Ошибка загрузки. Проверьте подключение к интернету.</div>';
@@ -48,17 +43,18 @@ async function renderHome(content) {
 
 // Загрузка вайбов из Supabase
 async function loadVibesFromSupabase() {
-  const { data: vibes, error } = await supabase
-    .from('vibes')
-    .select('*')
-    .order('created_at', { ascending: false });
+  try {
+    const { data: vibes, error } = await supabase
+      .from('vibes')
+      .select('*')
+      .order('created_at', { ascending: false });
 
-  if (error) {
+    if (error) throw error;
+    return vibes || [];
+  } catch (error) {
     console.error('Ошибка загрузки вайбов:', error);
     throw error;
   }
-
-  return vibes || [];
 }
 
 // Публикация вайба
@@ -91,7 +87,7 @@ async function publishVibe() {
   }
 
   try {
-    const { data, error } = await supabase
+    const { error } = await supabase
       .from('vibes')
       .insert([
         {
@@ -102,9 +98,7 @@ async function publishVibe() {
         }
       ]);
 
-    if (error) {
-      throw error;
-    }
+    if (error) throw error;
 
     // Очищаем форму
     textElement.value = '';
