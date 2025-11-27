@@ -13,8 +13,15 @@ document.addEventListener('DOMContentLoaded', function() {
 
 async function initializeApp() {
   try {
+    // Показываем загрузку
+    const content = document.getElementById("content");
+    content.innerHTML = '<div class="card">Загрузка приложения...</div>';
+    
     // Инициализируем Supabase
     supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    
+    // Даем время для инициализации
+    await new Promise(resolve => setTimeout(resolve, 100));
     
     // Проверяем авторизацию при загрузке
     await checkAuth();
@@ -25,10 +32,9 @@ async function initializeApp() {
     console.log('App initialized successfully');
   } catch (error) {
     console.error('Error initializing app:', error);
-    showError('Ошибка инициализации приложения');
+    showError('Ошибка инициализации приложения: ' + error.message);
   }
 }
-
 function setupTabHandlers() {
   document.querySelectorAll(".tabs button").forEach(btn => {
     btn.onclick = () => setTab(btn.dataset.tab);
