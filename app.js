@@ -35,6 +35,7 @@ async function initializeApp() {
     showError('Ошибка инициализации приложения: ' + error.message);
   }
 }
+
 function setupTabHandlers() {
   document.querySelectorAll(".tabs button").forEach(btn => {
     btn.onclick = () => setTab(btn.dataset.tab);
@@ -72,8 +73,8 @@ function showAuth() {
     <div class="auth-section">
       <div class="auth-form">
         <div class="auth-tabs">
-          <button class="auth-tab active" onclick="showAuthTab(event, 'login')">Вход</button>
-          <button class="auth-tab" onclick="showAuthTab(event, 'register')">Регистрация</button>
+          <button class="auth-tab active" data-tab="login">Вход</button>
+          <button class="auth-tab" data-tab="register">Регистрация</button>
         </div>
         <div id="auth-forms">
           <div id="login-form">
@@ -91,11 +92,20 @@ function showAuth() {
       </div>
     </div>
   `;
+
+  // Добавляем обработчики для табов аутентификации
+  document.querySelectorAll('.auth-tab').forEach(tab => {
+    tab.onclick = (e) => showAuthTab(e.target.dataset.tab);
+  });
 }
 
-function showAuthTab(event, tab) {
+function showAuthTab(tab) {
   document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
-  event.target.classList.add('active');
+  document.querySelectorAll('.auth-tab').forEach(t => {
+    if (t.dataset.tab === tab) {
+      t.classList.add('active');
+    }
+  });
   
   document.getElementById('login-form').classList.toggle('hidden', tab !== 'login');
   document.getElementById('register-form').classList.toggle('hidden', tab !== 'register');
