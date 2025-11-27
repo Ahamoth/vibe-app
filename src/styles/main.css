@@ -1,0 +1,110 @@
+body {
+  margin: 0;
+  background: #0f172a;
+  color: #fff;
+  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.top {
+  padding: 20px;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.tabs {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: rgba(15,23,42,0.9);
+  backdrop-filter: blur(10px);
+  display: flex;
+  justify-content: space-around;
+  padding: 10px 0;
+  border-top: 1px solid #1e293b;
+}
+
+.tabs button {
+  background: none;
+  border: none;
+  color: #94a3b8;
+  font-size: 14px;
+}
+
+.tabs .main-btn {
+  background: #8b5cf6;
+  color: white;
+  border-radius: 50%;
+  width: 48px;
+  height: 48px;
+  font-size: 20px;
+  margin-top: -20px;
+  box-shadow: 0 4px 20px rgba(139,92,246,0.6);
+}
+
+.card {
+  background: #1e293b;
+  border-radius: 14px;
+  padding: 14px;
+  margin: 12px;
+}
+
+.card-emoji {
+  font-size: 32px;
+  margin-bottom: 10px;
+}
+
+.input {
+  width: 100%;
+  padding: 10px;
+  border-radius: 12px;
+  background: #0f172a;
+  border: 1px solid #334155;
+  color: white;
+}
+
+.btn {
+  width: 100%;
+  padding: 12px;
+  border-radius: 12px;
+  margin-top: 10px;
+  background: #8b5cf6;
+  color: white;
+  border: none;
+  font-size: 16px;
+}
+
+/* Auth styles */
+.auth-section {
+  padding: 20px;
+}
+
+.auth-form {
+  background: #1e293b;
+  border-radius: 14px;
+  padding: 20px;
+  margin: 12px;
+}
+
+.auth-tabs {
+  display: flex;
+  margin-bottom: 20px;
+}
+
+.auth-tab {
+  flex: 1;
+  padding: 10px;
+  background: none;
+  border: none;
+  color: #94a3b8;
+  border-bottom: 2px solid transparent;
+}
+
+.auth-tab.active {
+  color: #8b5cf6;
+  border-bottom-color: #8b5cf6;
+}
+
+.hidden {
+  display: none;
+}
