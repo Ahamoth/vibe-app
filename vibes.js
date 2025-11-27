@@ -59,6 +59,22 @@ function renderCreate(content) {
   }, 100);
 }
 
+// Загрузка вайбов из Supabase
+async function loadVibesFromSupabase() {
+  try {
+    const { data: vibes, error } = await supabase
+      .from('vibes')
+      .select('*')
+      .order('created_at', { ascending: false });
+
+    if (error) throw error;
+    return vibes || [];
+  } catch (error) {
+    console.error('Ошибка загрузки вайбов:', error);
+    throw error;
+  }
+}
+
 // Публикация вайба
 async function publishVibe() {
   if (!currentUser) {
@@ -104,81 +120,6 @@ async function publishVibe() {
     // Очищаем форму
     textElement.value = '';
     setSelectedEmoji('✨'); // Сбрасываем на эмодзи по умолчанию
-    
-    // Переходим на ленту
-    setTab("home");
-    
-  } catch (error) {
-    console.error('Ошибка публикации:', error);
-    alert('Ошибка публикации: ' + error.message);
-  }
-}
-
-// Остальные функции остаются без изменений
-// ... (loadVibesFromSupabase, formatDate и другие)
-
-// Загрузка вайбов из Supabase
-async function loadVibesFromSupabase() {
-  try {
-    const { data: vibes, error } = await supabase
-      .from('vibes')
-      .select('*')
-      .order('created_at', { ascending: false });
-
-    if (error) throw error;
-    return vibes || [];
-  } catch (error) {
-    console.error('Ошибка загрузки вайбов:', error);
-    throw error;
-  }
-}
-
-// Публикация вайба
-async function publishVibe() {
-  if (!currentUser) {
-    alert('Войдите чтобы публиковать вайбы');
-    showAuth();
-    return;
-  }
-
-  if (!supabase) {
-    alert('Приложение не инициализировано');
-    return;
-  }
-
-  const textElement = document.getElementById("vibeText");
-  const emojiElement = document.getElementById("emoji");
-  
-  if (!textElement || !emojiElement) {
-    console.error('Form elements not found');
-    return;
-  }
-
-  const text = textElement.value.trim();
-  const emoji = emojiElement.value.trim() || "✨";
-
-  if (!text) {
-    alert("Напишите текст вайба");
-    return;
-  }
-
-  try {
-    const { error } = await supabase
-      .from('vibes')
-      .insert([
-        {
-          user_id: currentUser.id,
-          username: currentUser.user_metadata?.username || currentUser.email.split('@')[0],
-          text: text,
-          emoji: emoji
-        }
-      ]);
-
-    if (error) throw error;
-
-    // Очищаем форму
-    textElement.value = '';
-    emojiElement.value = '';
     
     // Переходим на ленту
     setTab("home");
