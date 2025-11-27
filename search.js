@@ -50,27 +50,35 @@ async function performSearch(query) {
       return;
     }
 
-    resultsContainer.innerHTML = vibes.map(vibe => `
-      <div class="card" data-vibe-id="${vibe.id}">
-        <div class="card-emoji">${vibe.emoji || '✨'}</div>
-        <div>${highlightText(vibe.text, query)}</div>
-        <small style="opacity:0.6;">@${vibe.username} • ${formatDate(vibe.created_at)}</small>
-        <div class="vibe-actions">
-          <button class="action-btn" onclick="toggleLike('${vibe.id}')" id="like-btn-${vibe.id}">
-            🤍 ${await getVibeLikesCount(vibe.id)}
-          </button>
-          <button class="action-btn" onclick="toggleComments('${vibe.id}')" id="comment-btn-${vibe.id}">
-            💬 ${await getVibeCommentsCount(vibe.id)}
-          </button>
+    // Создаем HTML для результатов поиска
+    let resultsHTML = '';
+    for (const vibe of vibes) {
+      const likesCount = await getVibeLikesCount(vibe.id);
+      const commentsCount = await getVibeCommentsCount(vibe.id);
+      
+      resultsHTML += `
+        <div class="card" data-vibe-id="${vibe.id}">
+          <div class="card-emoji">${vibe.emoji || '✨'}</div>
+          <div>${highlightText(vibe.text, query)}</div>
+          <small style="opacity:0.6;">@${vibe.username} • ${formatDate(vibe.created_at)}</small>
+          <div class="vibe-actions">
+            <button class="action-btn" onclick="toggleLike('${vibe.id}')" id="like-btn-${vibe.id}">
+              🤍 ${likesCount}
+            </button>
+            <button class="action-btn" onclick="toggleComments('${vibe.id}')" id="comment-btn-${vibe.id}">
+              💬 ${commentsCount}
+            </button>
+          </div>
         </div>
-      </div>
-    `).join('');
+      `;
+    }
+
+    resultsContainer.innerHTML = resultsHTML;
 
     // Обновляем кнопки лайков
-    vibes.forEach(vibe => {
-      refreshVibeLikes(vibe.id);
-      refreshVibeCommentsCount(vibe.id);
-    });
+    for (const vibe of vibes) {
+      await refreshVibeLikes(vibe.id);
+    }
 
   } catch (error) {
     console.error('Ошибка поиска:', error);
@@ -80,6 +88,10 @@ async function performSearch(query) {
 
 function highlightText(text, query) {
   if (!query) return text;
-  const regex = new RegExp(`(${query})`, 'gi');
+  const regex = new RegExp(`(${escapeRegex(query)})`, 'gi');
   return text.replace(regex, '<mark style="background: #8b5cf6; color: white;">$1</mark>');
+}
+
+function escapeRegex(string) {
+  return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
