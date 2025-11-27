@@ -57,20 +57,14 @@ function setTab(tab) {
     renderCreate(content);
   }
   else if (tab === "search") {
-    content.innerHTML = '<div class="card">Поиск пока недоступен</div>';
+    renderSearch(content);
   }
   else if (tab === "chats") {
-    content.innerHTML = '<div class="card">Чаты в разработке</div>';
+    renderChats(content);
   }
   else if (tab === "profile") {
     renderProfile(content);
   }
-  else if (tab === "search") {
-  renderSearch(content);
-}
-else if (tab === "chats") {
-  renderChats(content);
-}
 }
 
 function showAuth() {
@@ -144,6 +138,15 @@ function renderCreate(content) {
       <button class="btn" onclick="publishVibe()">Опубликовать</button>
     </div>
   `;
+}
+
+// Заглушки для функций которые будут в других файлах
+function renderSearch(content) {
+  content.innerHTML = '<div class="card">Поиск пока недоступен</div>';
+}
+
+function renderChats(content) {
+  content.innerHTML = '<div class="card">Чаты в разработке</div>';
 }
 
 function showError(message) {
