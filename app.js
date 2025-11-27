@@ -1,32 +1,32 @@
-// Конфигурация Supabase
+
 const SUPABASE_URL = 'https://fureiffcxnqgoiejukmm.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ1cmVpZmZjeG5xZ29pZWp1a21tIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQyNjExNzgsImV4cCI6MjA3OTgzNzE3OH0.nT_mulmlukW3twj7-nmoILWQ8_AvbRpidhsWO5FpSHY';
 
-// Глобальные переменные
+
 let supabase;
 let currentUser = null;
 
-// Инициализация приложения
+я
 document.addEventListener('DOMContentLoaded', function() {
   initializeApp();
 });
 
 async function initializeApp() {
   try {
-    // Показываем загрузку
+
     const content = document.getElementById("content");
     content.innerHTML = '<div class="card">Загрузка приложения...</div>';
     
-    // Инициализируем Supabase
+
     supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
     
-    // Даем время для инициализации
+
     await new Promise(resolve => setTimeout(resolve, 100));
     
-    // Проверяем авторизацию при загрузке
+
     await checkAuth();
     
-    // Настраиваем обработчики вкладок
+
     setupTabHandlers();
     
     console.log('App initialized successfully');
@@ -93,7 +93,7 @@ function showAuth() {
     </div>
   `;
 
-  // Добавляем обработчики для табов аутентификации
+
   document.querySelectorAll('.auth-tab').forEach(tab => {
     tab.onclick = (e) => showAuthTab(e.target.dataset.tab);
   });
@@ -111,7 +111,7 @@ function showAuthTab(tab) {
   document.getElementById('register-form').classList.toggle('hidden', tab !== 'register');
 }
 
-// Функция рендера профиля
+
 function renderProfile(content) {
   if (!currentUser) {
     showAuth();
@@ -129,7 +129,7 @@ function renderProfile(content) {
   `;
 }
 
-// Функция рендера создания вайба
+
 function renderCreate(content) {
   content.innerHTML = `
     <div class="card">
@@ -140,7 +140,7 @@ function renderCreate(content) {
   `;
 }
 
-// Заглушки для функций которые будут в других файлах
+
 function renderSearch(content) {
   content.innerHTML = '<div class="card">Поиск пока недоступен</div>';
 }
