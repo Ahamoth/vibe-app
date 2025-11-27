@@ -1,4 +1,3 @@
-// Система поиска
 let searchTimeout;
 
 function renderSearch(content) {
@@ -36,7 +35,7 @@ async function performSearch(query) {
   resultsContainer.innerHTML = '<div class="card">Поиск...</div>';
 
   try {
-    // Ищем по тексту вайбов
+
     const { data: vibes, error: vibesError } = await supabase
       .from('vibes')
       .select('*')
@@ -50,7 +49,7 @@ async function performSearch(query) {
       return;
     }
 
-    // Создаем HTML для результатов поиска
+
     let resultsHTML = '';
     for (const vibe of vibes) {
       const likesCount = await getVibeLikesCount(vibe.id);
@@ -75,7 +74,7 @@ async function performSearch(query) {
 
     resultsContainer.innerHTML = resultsHTML;
 
-    // Обновляем кнопки лайков
+
     for (const vibe of vibes) {
       await refreshVibeLikes(vibe.id);
     }
