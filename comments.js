@@ -56,7 +56,7 @@ async function showComments(vibeId) {
   
   // Фокус на поле ввода
   const commentInput = document.getElementById(`comment-input-${vibeId}`);
-  commentInput.focus();
+  if (commentInput) commentInput.focus();
 }
 
 async function loadComments(vibeId) {
@@ -72,7 +72,7 @@ async function loadComments(vibeId) {
 
     if (error) throw error;
 
-    if (comments.length === 0) {
+    if (!comments || comments.length === 0) {
       commentsList.innerHTML = '<div style="text-align: center; padding: 20px; opacity: 0.7;">Пока нет комментариев</div>';
       return;
     }
@@ -102,6 +102,8 @@ async function addComment(vibeId) {
   }
 
   const commentInput = document.getElementById(`comment-input-${vibeId}`);
+  if (!commentInput) return;
+
   const text = commentInput.value.trim();
 
   if (!text) {
@@ -130,7 +132,7 @@ async function addComment(vibeId) {
     await loadComments(vibeId);
     
     // Обновляем счетчик комментариев
-    refreshVibeCommentsCount(vibeId);
+    await refreshVibeCommentsCount(vibeId);
   } catch (error) {
     console.error('Ошибка добавления комментария:', error);
     alert('Ошибка при добавлении комментария');
@@ -138,22 +140,34 @@ async function addComment(vibeId) {
 }
 
 async function refreshVibeCommentsCount(vibeId) {
-  const { count } = await supabase
-    .from('comments')
-    .select('*', { count: 'exact', head: true })
-    .eq('vibe_id', vibeId);
+  try {
+    const { count, error } = await supabase
+      .from('comments')
+      .select('*', { count: 'exact', head: true })
+      .eq('vibe_id', vibeId);
 
-  const commentBtn = document.querySelector(`[onclick="toggleComments('${vibeId}')"]`);
-  if (commentBtn) {
-    commentBtn.innerHTML = `💬 ${count || 0}`;
+    if (error) throw error;
+
+    const commentBtn = document.querySelector(`[onclick="toggleComments('${vibeId}')"]`);
+    if (commentBtn) {
+      commentBtn.innerHTML = `💬 ${count || 0}`;
+    }
+  } catch (error) {
+    console.error('Ошибка обновления счетчика комментариев:', error);
   }
 }
 
 async function getVibeCommentsCount(vibeId) {
-  const { count } = await supabase
-    .from('comments')
-    .select('*', { count: 'exact', head: true })
-    .eq('vibe_id', vibeId);
-  
-  return count || 0;
+  try {
+    const { count, error } = await supabase
+      .from('comments')
+      .select('*', { count: 'exact', head: true })
+      .eq('vibe_id', vibeId);
+    
+    if (error) throw error;
+    return count || 0;
+  } catch (error) {
+    console.error('Ошибка получения количества комментариев:', error);
+    return 0;
+  }
 }
