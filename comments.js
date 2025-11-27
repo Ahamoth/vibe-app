@@ -1,4 +1,4 @@
-// Система комментариев
+
 let openCommentsVibeId = null;
 
 async function toggleComments(vibeId) {
@@ -24,11 +24,11 @@ async function toggleComments(vibeId) {
 }
 
 async function showComments(vibeId) {
-  // Создаем секцию комментариев
+
   const vibeElement = document.querySelector(`[data-vibe-id="${vibeId}"]`);
   if (!vibeElement) return;
 
-  // Скрываем другие открытые комментарии
+
   document.querySelectorAll('.comments-section').forEach(section => {
     section.style.display = 'none';
   });
@@ -51,10 +51,10 @@ async function showComments(vibeId) {
   vibeElement.appendChild(commentsSection);
   openCommentsVibeId = vibeId;
   
-  // Загружаем комментарии
+
   await loadComments(vibeId);
   
-  // Фокус на поле ввода
+
   const commentInput = document.getElementById(`comment-input-${vibeId}`);
   if (commentInput) commentInput.focus();
 }
@@ -86,7 +86,7 @@ async function loadComments(vibeId) {
       </div>
     `).join('');
 
-    // Прокручиваем к последнему комментарию
+
     commentsList.scrollTop = commentsList.scrollHeight;
   } catch (error) {
     console.error('Ошибка загрузки комментариев:', error);
@@ -125,13 +125,13 @@ async function addComment(vibeId) {
 
     if (error) throw error;
 
-    // Очищаем поле ввода
+
     commentInput.value = '';
     
-    // Обновляем комментарии
+
     await loadComments(vibeId);
     
-    // Обновляем счетчик комментариев
+
     await refreshVibeCommentsCount(vibeId);
   } catch (error) {
     console.error('Ошибка добавления комментария:', error);
