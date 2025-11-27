@@ -6,11 +6,17 @@ async function checkAuth() {
       return;
     }
     
-    const { data: { user }, error } = await supabase.auth.getUser();
+   const { data: { user }, error } = await supabase.auth.getUser();
     
     if (error) {
-      console.error('Ошибка проверки авторизации:', error);
-      showAuth();
+      // AuthSessionMissingError - это нормально для неавторизованных пользователей
+      if (error.name === 'AuthSessionMissingError') {
+        console.log('Пользователь не авторизован, показываем форму входа');
+        showAuth();
+      } else {
+        console.error('Ошибка проверки авторизации:', error);
+        showAuth();
+      }
       return;
     }
     
@@ -19,15 +25,14 @@ async function checkAuth() {
       showApp();
       console.log('User authenticated:', user.email);
     } else {
-      showAuth();
       console.log('No user found, showing auth');
+      showAuth();
     }
   } catch (error) {
     console.error('Ошибка при проверке авторизации:', error);
     showAuth();
   }
 }
-
 // Показать основное приложение
 function showApp() {
   const content = document.getElementById("content");
