@@ -15,17 +15,25 @@ async function renderHome(content) {
     }
 
     content.innerHTML = vibes
-      .map(vibe => `
-        <div class="card">
-          <div class="card-emoji">${vibe.emoji || '✨'}</div>
-          <div>${vibe.text}</div>
-          <small style="opacity:0.6;">@${vibe.username} • ${formatDate(vibe.created_at)}</small>
-          <div style="margin-top: 10px; display: flex; gap: 15px;">
-            <button onclick="toggleLike('${vibe.id}')" style="background: none; border: none; color: #94a3b8; cursor: pointer;">❤️ 0</button>
-            <button onclick="showComments('${vibe.id}')" style="background: none; border: none; color: #94a3b8; cursor: pointer;">💬 0</button>
-          </div>
-        </div>
-      `).join("");
+  .map(vibe => `
+    <div class="card" data-vibe-id="${vibe.id}">
+      <div class="card-emoji">${vibe.emoji || '✨'}</div>
+      <div>${vibe.text}</div>
+      <small style="opacity:0.6;">@${vibe.username} • ${formatDate(vibe.created_at)}</small>
+      <div class="vibe-actions">
+        <button class="action-btn" onclick="toggleLike('${vibe.id}')" id="like-btn-${vibe.id}">
+          🤍 ${await getVibeLikesCount(vibe.id)}
+        </button>
+        <button class="action-btn" onclick="toggleComments('${vibe.id}')" id="comment-btn-${vibe.id}">
+          💬 ${await getVibeCommentsCount(vibe.id)}
+        </button>
+      </div>
+    </div>
+  `).join("");
+    // Обновляем кнопки лайков
+vibes.forEach(vibe => {
+  refreshVibeLikes(vibe.id);
+});
   } catch (error) {
     console.error('Error loading vibes:', error);
     content.innerHTML = '<div class="card">Ошибка загрузки. Проверьте подключение к интернету.</div>';
