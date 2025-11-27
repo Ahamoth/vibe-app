@@ -1,6 +1,11 @@
 // Проверка авторизации
 async function checkAuth() {
   try {
+    if (!supabase) {
+      console.error('Supabase not initialized');
+      return;
+    }
+    
     const { data: { user }, error } = await supabase.auth.getUser();
     
     if (error) {
@@ -12,8 +17,10 @@ async function checkAuth() {
     if (user) {
       currentUser = user;
       showApp();
+      console.log('User authenticated:', user.email);
     } else {
       showAuth();
+      console.log('No user found, showing auth');
     }
   } catch (error) {
     console.error('Ошибка при проверке авторизации:', error);
@@ -32,6 +39,11 @@ function showApp() {
 
 // Регистрация
 async function signUp() {
+  if (!supabase) {
+    alert('Приложение не инициализировано');
+    return;
+  }
+
   const email = document.getElementById('register-email').value;
   const password = document.getElementById('register-password').value;
   const username = document.getElementById('register-username').value;
@@ -65,7 +77,7 @@ async function signUp() {
       document.getElementById('register-email').value = '';
       document.getElementById('register-password').value = '';
       document.getElementById('register-username').value = '';
-      showAuthTab('login');
+      showAuthTab(event, 'login');
     }
   } catch (error) {
     alert('Ошибка регистрации: ' + error.message);
@@ -74,6 +86,11 @@ async function signUp() {
 
 // Вход
 async function signIn() {
+  if (!supabase) {
+    alert('Приложение не инициализировано');
+    return;
+  }
+
   const email = document.getElementById('login-email').value;
   const password = document.getElementById('login-password').value;
 
@@ -101,6 +118,11 @@ async function signIn() {
 
 // Выход
 async function signOut() {
+  if (!supabase) {
+    alert('Приложение не инициализировано');
+    return;
+  }
+
   try {
     const { error } = await supabase.auth.signOut();
     if (error) {
