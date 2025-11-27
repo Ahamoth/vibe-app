@@ -1,13 +1,3 @@
-// Конфигурация Supabase
-const SUPABASE_URL = 'https://fureiffcxnqgoiejukmm.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ1cmVpZmZjeG5xZ29pZWp1a21tIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQyNjExNzgsImV4cCI6MjA3OTgzNzE3OH0.nT_mulmlukW3twj7-nmoILWQ8_AvbRpidhsWO5FpSHY';
-
-// Инициализация Supabase клиента
-const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-// Основное состояние приложения
-let currentUser = null;
-
 // Инициализация приложения
 document.addEventListener('DOMContentLoaded', function() {
   initializeApp();
@@ -101,6 +91,17 @@ function renderProfile(content) {
       <p><strong>Имя пользователя:</strong> ${currentUser.user_metadata?.username || 'Не указано'}</p>
       <p><strong>ID:</strong> ${currentUser.id.substring(0, 8)}...</p>
       <button class="btn" onclick="signOut()" style="background: #ef4444;">Выйти</button>
+    </div>
+  `;
+}
+
+// Функция рендера создания вайба
+function renderCreate(content) {
+  content.innerHTML = `
+    <div class="card">
+      <textarea class="input" id="vibeText" placeholder="Какой у тебя вайб?"></textarea>
+      <input class="input" id="emoji" placeholder="Эмодзи (например 😎)">
+      <button class="btn" onclick="publishVibe()">Опубликовать</button>
     </div>
   `;
 }
