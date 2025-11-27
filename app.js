@@ -65,6 +65,12 @@ function setTab(tab) {
   else if (tab === "profile") {
     renderProfile(content);
   }
+  else if (tab === "search") {
+  renderSearch(content);
+}
+else if (tab === "chats") {
+  renderChats(content);
+}
 }
 
 function showAuth() {
