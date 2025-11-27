@@ -1,4 +1,4 @@
-// Проверка авторизации
+
 async function checkAuth() {
   try {
     if (!supabase) {
@@ -34,7 +34,7 @@ async function checkAuth() {
   }
 }
 
-// Показать основное приложение
+
 function showApp() {
   const content = document.getElementById("content");
   if (content.innerHTML.includes('auth-section')) {
@@ -43,7 +43,7 @@ function showApp() {
   setTab('home');
 }
 
-// Регистрация
+
 async function signUp() {
   if (!supabase) {
     alert('Приложение не инициализировано');
@@ -91,7 +91,7 @@ async function signUp() {
   }
 }
 
-// Вход
+
 async function signIn() {
   if (!supabase) {
     alert('Приложение не инициализировано');
@@ -123,7 +123,7 @@ async function signIn() {
   }
 }
 
-// Выход
+
 async function signOut() {
   if (!supabase) {
     alert('Приложение не инициализировано');
