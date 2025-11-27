@@ -1,4 +1,3 @@
-// Рендер домашней страницы
 async function renderHome(content) {
   content.innerHTML = '<div class="card">Загрузка вайбов...</div>';
   
@@ -10,7 +9,7 @@ async function renderHome(content) {
       return;
     }
 
-    // Создаем HTML для каждого вайба
+
     let vibesHTML = '';
     for (const vibe of vibes) {
       const likesCount = await getVibeLikesCount(vibe.id);
@@ -41,7 +40,7 @@ async function renderHome(content) {
   }
 }
 
-// Функция рендера создания вайба
+
 function renderCreate(content) {
   content.innerHTML = `
     <div class="card">
@@ -51,7 +50,7 @@ function renderCreate(content) {
     </div>
   `;
 
-  // Инициализируем пикер эмодзи
+
   setTimeout(() => {
     initEmojiPicker('emoji-picker-container', (emoji) => {
       console.log('Выбрано эмодзи:', emoji);
@@ -59,7 +58,7 @@ function renderCreate(content) {
   }, 100);
 }
 
-// Загрузка вайбов из Supabase
+
 async function loadVibesFromSupabase() {
   try {
     const { data: vibes, error } = await supabase
@@ -75,7 +74,7 @@ async function loadVibesFromSupabase() {
   }
 }
 
-// Публикация вайба
+
 async function publishVibe() {
   if (!currentUser) {
     alert('Войдите чтобы публиковать вайбы');
@@ -117,11 +116,11 @@ async function publishVibe() {
 
     if (error) throw error;
 
-    // Очищаем форму
+
     textElement.value = '';
     setSelectedEmoji('✨'); // Сбрасываем на эмодзи по умолчанию
     
-    // Переходим на ленту
+
     setTab("home");
     
   } catch (error) {
@@ -130,7 +129,7 @@ async function publishVibe() {
   }
 }
 
-// Форматирование даты
+
 function formatDate(dateString) {
   try {
     const date = new Date(dateString);
