@@ -3,10 +3,6 @@ async function renderHome(content) {
   content.innerHTML = '<div class="card">Загрузка вайбов...</div>';
   
   try {
-    if (!supabase) {
-      throw new Error('Supabase not initialized');
-    }
-    
     const vibes = await loadVibesFromSupabase();
     
     if (vibes.length === 0) {
@@ -14,26 +10,36 @@ async function renderHome(content) {
       return;
     }
 
-    content.innerHTML = vibes
-  .map(vibe => `
-    <div class="card" data-vibe-id="${vibe.id}">
-      <div class="card-emoji">${vibe.emoji || '✨'}</div>
-      <div>${vibe.text}</div>
-      <small style="opacity:0.6;">@${vibe.username} • ${formatDate(vibe.created_at)}</small>
-      <div class="vibe-actions">
-        <button class="action-btn" onclick="toggleLike('${vibe.id}')" id="like-btn-${vibe.id}">
-          🤍 ${await getVibeLikesCount(vibe.id)}
-        </button>
-        <button class="action-btn" onclick="toggleComments('${vibe.id}')" id="comment-btn-${vibe.id}">
-          💬 ${await getVibeCommentsCount(vibe.id)}
-        </button>
-      </div>
-    </div>
-  `).join("");
+    // Создаем HTML для каждого вайба
+    let vibesHTML = '';
+    for (const vibe of vibes) {
+      const likesCount = await getVibeLikesCount(vibe.id);
+      const commentsCount = await getVibeCommentsCount(vibe.id);
+      
+      vibesHTML += `
+        <div class="card" data-vibe-id="${vibe.id}">
+          <div class="card-emoji">${vibe.emoji || '✨'}</div>
+          <div>${vibe.text}</div>
+          <small style="opacity:0.6;">@${vibe.username} • ${formatDate(vibe.created_at)}</small>
+          <div class="vibe-actions">
+            <button class="action-btn" onclick="toggleLike('${vibe.id}')" id="like-btn-${vibe.id}">
+              🤍 ${likesCount}
+            </button>
+            <button class="action-btn" onclick="toggleComments('${vibe.id}')" id="comment-btn-${vibe.id}">
+              💬 ${commentsCount}
+            </button>
+          </div>
+        </div>
+      `;
+    }
+
+    content.innerHTML = vibesHTML;
+
     // Обновляем кнопки лайков
-vibes.forEach(vibe => {
-  refreshVibeLikes(vibe.id);
-});
+    for (const vibe of vibes) {
+      await refreshVibeLikes(vibe.id);
+    }
+
   } catch (error) {
     console.error('Error loading vibes:', error);
     content.innerHTML = '<div class="card">Ошибка загрузки. Проверьте подключение к интернету.</div>';
@@ -135,13 +141,4 @@ function formatDate(dateString) {
   } catch (e) {
     return 'недавно';
   }
-}
-
-// Временные функции для лайков и комментариев
-async function toggleLike(vibeId) {
-  alert('Лайки скоро будут добавлены!');
-}
-
-async function showComments(vibeId) {
-  alert('Комментарии скоро будут добавлены!');
 }
