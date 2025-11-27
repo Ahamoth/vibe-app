@@ -1,14 +1,32 @@
+// Конфигурация Supabase
+const SUPABASE_URL = 'https://fureiffcxnqgoiejukmm.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ1cmVpZmZjeG5xZ29pZWp1a21tIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQyNjExNzgsImV4cCI6MjA3OTgzNzE3OH0.nT_mulmlukW3twj7-nmoILWQ8_AvbRpidhsWO5FpSHY';
+
+// Глобальные переменные
+let supabase;
+let currentUser = null;
+
 // Инициализация приложения
 document.addEventListener('DOMContentLoaded', function() {
   initializeApp();
 });
 
 async function initializeApp() {
-  // Проверяем авторизацию при загрузке
-  await checkAuth();
-  
-  // Настраиваем обработчики вкладок
-  setupTabHandlers();
+  try {
+    // Инициализируем Supabase
+    supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    
+    // Проверяем авторизацию при загрузке
+    await checkAuth();
+    
+    // Настраиваем обработчики вкладок
+    setupTabHandlers();
+    
+    console.log('App initialized successfully');
+  } catch (error) {
+    console.error('Error initializing app:', error);
+    showError('Ошибка инициализации приложения');
+  }
 }
 
 function setupTabHandlers() {
@@ -48,8 +66,8 @@ function showAuth() {
     <div class="auth-section">
       <div class="auth-form">
         <div class="auth-tabs">
-          <button class="auth-tab active" onclick="showAuthTab('login')">Вход</button>
-          <button class="auth-tab" onclick="showAuthTab('register')">Регистрация</button>
+          <button class="auth-tab active" onclick="showAuthTab(event, 'login')">Вход</button>
+          <button class="auth-tab" onclick="showAuthTab(event, 'register')">Регистрация</button>
         </div>
         <div id="auth-forms">
           <div id="login-form">
@@ -69,7 +87,7 @@ function showAuth() {
   `;
 }
 
-function showAuthTab(tab) {
+function showAuthTab(event, tab) {
   document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
   event.target.classList.add('active');
   
@@ -104,4 +122,9 @@ function renderCreate(content) {
       <button class="btn" onclick="publishVibe()">Опубликовать</button>
     </div>
   `;
+}
+
+function showError(message) {
+  const content = document.getElementById("content");
+  content.innerHTML = `<div class="card" style="border-left: 4px solid #ef4444;">${message}</div>`;
 }
